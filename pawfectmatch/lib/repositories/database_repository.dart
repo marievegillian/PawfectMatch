@@ -437,7 +437,7 @@ Future<List<Appointment>> getAppointmentsByStatus(String status) async {
   }
 }
 
-Future<void> updateAppointmentStatus(String appointmentId, String newStatus) async {
+Future<void> CancelAppointment(String appointmentId) async {
   try {
     // Get the reference to the specific appointment document
     DocumentReference<Map<String, dynamic>> appointmentRef =
@@ -445,7 +445,7 @@ Future<void> updateAppointmentStatus(String appointmentId, String newStatus) asy
 
     // Update the status field
     await appointmentRef.update({
-      'status': newStatus,
+      'status': 'cancelled',
     });
   } catch (error) {
     print('Error updating appointment status: $error');

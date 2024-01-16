@@ -26,7 +26,6 @@ class AppointmentDetailsScreen extends StatelessWidget {
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 10),
-            _buildDetailRow('User:', appointment.user),
             _buildDetailRow('Dog:', appointment.dog),
             _buildDetailRow('Status:', appointment.status),
             _buildDetailRow('Date and Time:', _formatDateTime(appointment.date)),
@@ -75,13 +74,8 @@ class AppointmentDetailsScreen extends StatelessWidget {
 
   void _cancelAppointment(BuildContext context) async {
     try {
-      // Implement cancellation logic here
-      // For example, show a confirmation dialog before canceling
-
-      // Update the status to 'cancelled'
-      await DatabaseRepository().updateAppointmentStatus(
+      await DatabaseRepository().CancelAppointment(
         appointment.id,
-        'cancelled',
       );
 
       Navigator.pushReplacement(

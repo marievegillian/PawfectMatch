@@ -75,6 +75,7 @@ class _AppointmentList extends StatelessWidget {
                 },
                 child: ListTile(
                   title: Text(snapshot.data![index].dog),
+                  subtitle: Text('Date and Time: ${_formatDateTime(snapshot.data![index].date)}'),
                 ),
               );
             },
@@ -83,8 +84,11 @@ class _AppointmentList extends StatelessWidget {
       },
     );
   }
-}
 
+  String _formatDateTime(Timestamp timestamp) {
+    DateTime dateTime = timestamp.toDate();
+    return DateFormat('EEE, MMM d, y h:mm a').format(dateTime);
+  }
 
   void _navigateToAppointmentDetails(BuildContext context, Appointment appointment) {
     Navigator.push(
@@ -95,7 +99,6 @@ class _AppointmentList extends StatelessWidget {
     );
   }
 
-
   Future<List<Appointment>> _getAppointments(String status) async {
     try {
       List<Appointment> appointments = await DatabaseRepository().getAppointmentsByStatus(status);
@@ -105,5 +108,5 @@ class _AppointmentList extends StatelessWidget {
       return [];
     }
   }
-
+}
 
