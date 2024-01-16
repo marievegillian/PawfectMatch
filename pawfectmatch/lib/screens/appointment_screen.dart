@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:pawfectmatch/models/appointment_model.dart';
+import 'package:pawfectmatch/screens/appointmentdetails_screen.dart';
 import 'package:pawfectmatch/screens/newappointment_screen.dart';
 import '/repositories/database_repository.dart'; 
 
@@ -22,9 +24,9 @@ class AppointmentScreen extends StatelessWidget {
         ),
         body: TabBarView(
           children: [
-            _AppointmentList(status: 'upcoming'),
-            _AppointmentList(status: 'completed'),
-            _AppointmentList(status: 'cancelled'),
+            _AppointmentList(status: 'upcoming', appointments: [],),
+            _AppointmentList(status: 'completed', appointments: [],),
+            _AppointmentList(status: 'cancelled', appointments: [],),
           ],
         ),
         floatingActionButton: FloatingActionButton(
@@ -45,12 +47,14 @@ class AppointmentScreen extends StatelessWidget {
 
 class _AppointmentList extends StatelessWidget {
   final String status;
+  final List<Appointment> appointments; // Pass the list of Appointment objects
 
-  _AppointmentList({required this.status});
+  _AppointmentList({required this.status, required this.appointments});
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<List<String>>(
+    return FutureBuilder<List<Appointment>>(
+      // Update the generic type of FutureBuilder
       future: _getAppointments(status),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
@@ -63,8 +67,15 @@ class _AppointmentList extends StatelessWidget {
           return ListView.builder(
             itemCount: snapshot.data!.length,
             itemBuilder: (context, index) {
-              return ListTile(
-                title: Text(snapshot.data![index]),
+              // Use a GestureDetector to make the ListTile tappable
+              return GestureDetector(
+                onTap: () {
+                  // Navigate to AppointmentDetailsScreen when tapped
+                  _navigateToAppointmentDetails(context, snapshot.data![index]);
+                },
+                child: ListTile(
+                  title: Text(snapshot.data![index].dog),
+                ),
               );
             },
           );
@@ -72,15 +83,27 @@ class _AppointmentList extends StatelessWidget {
       },
     );
   }
+}
 
-  Future<List<String>> _getAppointments(String status) async {
+
+  void _navigateToAppointmentDetails(BuildContext context, Appointment appointment) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => AppointmentDetailsScreen(appointment: appointment),
+      ),
+    );
+  }
+
+
+  Future<List<Appointment>> _getAppointments(String status) async {
     try {
-      List<String> appointments = await DatabaseRepository().getAppointmentsByStatus(status);
+      List<Appointment> appointments = await DatabaseRepository().getAppointmentsByStatus(status);
       return appointments;
     } catch (error) {
       print('Error fetching appointments: $error');
       return [];
     }
   }
-}
+
 

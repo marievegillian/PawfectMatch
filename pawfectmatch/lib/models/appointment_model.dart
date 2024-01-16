@@ -1,11 +1,15 @@
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class Appointment {
+  final String id;
   final String user;
-  final DateTime date;
+  final Timestamp date;
   final String dog;
   final String status;
 
   Appointment({
+    required this.id,
     required this.user,
     required this.date,
     required this.dog,
@@ -14,6 +18,7 @@ class Appointment {
 
     factory Appointment.fromJson(Map<String, dynamic> json) {
     return Appointment(
+      id: json['id'] ?? '',
       user: json['user'] ?? '',
       dog: json['dog'] ?? '',
       status: json['status'] ?? '',
@@ -23,6 +28,7 @@ class Appointment {
 
   Map<String, dynamic> toJson() {
     return {
+      'id': id,
       'user': user,
       'dog': dog,
       'status': status,

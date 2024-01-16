@@ -44,6 +44,8 @@ class _HomeScreenState extends State<HomeScreen> {
         return const ChatListScreen(); 
       case 2:
         return MapScreen(); // Add MapScreen
+      case 3:
+        return AppointmentScreen();
       case 4:
         return const UserProfileScreen(); 
       default:

@@ -175,7 +175,7 @@
     }
   }
 
-    Future<List<String>> getAppointmentsByStatus(String status) async {
+Future<List<Appointment>> getAppointmentsByStatus(String status) async {
   try {
     // Query the 'appointments' collection based on the provided status
     QuerySnapshot<Map<String, dynamic>> snapshot = await _firebaseFirestore
@@ -184,9 +184,9 @@
         .where('user', isEqualTo: loggedInOwner)
         .get();
 
-    // Extract appointment names from the documents
-    List<String> appointments = snapshot.docs.map((doc) {
-      return doc.data()['dog'] as String; // Replace 'dog' with the actual field in your appointment document
+    // Extract appointments from the documents
+    List<Appointment> appointments = snapshot.docs.map((doc) {
+      return Appointment.fromJson(doc.data() as Map<String, dynamic>);
     }).toList();
 
     return appointments;
@@ -195,6 +195,7 @@
     throw error; // Rethrow the error for handling in the calling code
   }
 }
+
 
 
   Future<bool> checkMatch(String likedDogOwnerId) async {
@@ -436,6 +437,21 @@
   }
 }
 
+Future<void> updateAppointmentStatus(String appointmentId, String newStatus) async {
+  try {
+    // Get the reference to the specific appointment document
+    DocumentReference<Map<String, dynamic>> appointmentRef =
+        _firebaseFirestore.collection('appointments').doc(appointmentId);
 
+    // Update the status field
+    await appointmentRef.update({
+      'status': newStatus,
+    });
+  } catch (error) {
+    print('Error updating appointment status: $error');
+    throw error; // Rethrow the error for handling in the calling code
   }
+}
+
+ }
 

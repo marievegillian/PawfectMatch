@@ -156,14 +156,23 @@ class _NewAppointmentScreenState extends State<NewAppointmentScreen> {
         FirebaseFirestore.instance.collection('appointments');
 
     // Create a new document with a unique ID
-    await appointments.add({
+    DocumentReference<Map<String, dynamic>> newAppointmentRef =
+        await appointments.add({
       'user': DatabaseRepository().loggedInOwner,
       'dog': selectedDog,
       'dateTime': selectedDateTime,
-      'status': 'upcoming'
+      'status': 'upcoming',
+      'id': '' // Initialize with an empty string (will be updated later)
     });
 
-    print('Appointment saved successfully!');
+    // Get the ID of the newly created appointment
+    String appointmentId = newAppointmentRef.id;
+
+    // Update the document with the actual ID
+    await newAppointmentRef.update({'id': appointmentId});
+
+    // Print or use the appointment ID as needed
+    print('Appointment saved successfully! ID: $appointmentId');
 
     // Redirect to AppointmentScreen
     Navigator.pushReplacement(
@@ -174,5 +183,6 @@ class _NewAppointmentScreenState extends State<NewAppointmentScreen> {
     print('Error saving appointment: $error');
   }
 }
+
 
 }
