@@ -4,6 +4,8 @@ import 'package:intl/intl.dart';
 import 'package:pawfectmatch/models/appointment_model.dart';
 import 'package:pawfectmatch/repositories/database_repository.dart';
 import 'package:pawfectmatch/screens/appointment_screen.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 class AppointmentDetailsScreen extends StatelessWidget {
   final Appointment appointment;
@@ -28,9 +30,11 @@ class AppointmentDetailsScreen extends StatelessWidget {
             SizedBox(height: 10),
             _buildDetailRow('Dog:', appointment.dog),
             _buildDetailRow('Status:', appointment.status),
-            _buildDetailRow('Date and Time:', _formatDateTime(appointment.date)),
+            _buildDetailRow(
+                'Date and Time:', _formatDateTime(appointment.date)),
             SizedBox(height: 20),
-            if (appointment.status == 'upcoming') // Show buttons only if the status is 'upcoming'
+            if (appointment.status ==
+                'upcoming') // Show buttons only if the status is 'upcoming'
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
@@ -91,8 +95,52 @@ class AppointmentDetailsScreen extends StatelessWidget {
   void _proceedToPayment(BuildContext context) {
     // Implement logic to proceed to payment screen
     // This could involve navigating to a payment screen or initiating a payment process
+    try {
+      _launchURL(
+          "https://pm.link/org-CE8qjbKiDcVRAQjPkYns4jk8/test/MkM692B", context);
+      // Additional logic after launching the URL if needed
+    } catch (e) {
+      print('Error in _proceedToPayment: $e');
+    }
 
     // After payment, you might want to go back to the previous screen or refresh the appointment list
-    Navigator.pop(context);
+    //Navigator.pop(context);
+  }
+
+  /*void _launchURL(String url) async {
+    if (await canLaunch(url)) {
+      await launch(url, forceWebView: true, enableJavaScript: true);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }*/
+  /*void _launchURL(String url, context) async {
+    try {
+      // Open a WebView with JavaScript enabled
+      await Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => WebView(
+            initialUrl: url,
+            javascriptMode: JavascriptMode.unrestricted,
+          ),
+        ),
+      );
+    } catch (e) {
+      print('Error launching payment gateway URL: $e');
+    }
+  }*/
+  void _launchURL(String url, BuildContext context) async {
+    try {
+      await launch(url);
+      //await launch(url, forceWebView: true, enableJavaScript: true);
+    } catch (e) {
+      // If an error occurs, try opening in the external browser without WebView
+      try {
+        await launch(url, forceWebView: true, enableJavaScript: true);
+        //await launch(url);
+      } catch (e) {
+        print('Error launching URL: $e');
+      }
+    }
   }
 }
