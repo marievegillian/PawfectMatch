@@ -4,7 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:pawfectmatch/models/appointment_model.dart';
 import 'package:pawfectmatch/screens/appointmentdetails_screen.dart';
 import 'package:pawfectmatch/screens/newappointment_screen.dart';
-import '/repositories/database_repository.dart'; 
+import '/repositories/database_repository.dart';
 
 class AppointmentScreen extends StatelessWidget {
   @override
@@ -17,16 +17,25 @@ class AppointmentScreen extends StatelessWidget {
           bottom: TabBar(
             tabs: [
               Tab(text: 'Upcoming'),
-              Tab(text: 'Completed'),
+              Tab(text: 'Paid'),
               Tab(text: 'Cancelled'),
             ],
           ),
         ),
         body: TabBarView(
           children: [
-            _AppointmentList(status: 'upcoming', appointments: [],),
-            _AppointmentList(status: 'completed', appointments: [],),
-            _AppointmentList(status: 'cancelled', appointments: [],),
+            _AppointmentList(
+              status: 'upcoming',
+              appointments: [],
+            ),
+            _AppointmentList(
+              status: 'completed',
+              appointments: [],
+            ),
+            _AppointmentList(
+              status: 'cancelled',
+              appointments: [],
+            ),
           ],
         ),
         floatingActionButton: FloatingActionButton(
@@ -75,7 +84,8 @@ class _AppointmentList extends StatelessWidget {
                 },
                 child: ListTile(
                   title: Text(snapshot.data![index].dog),
-                  subtitle: Text('Date and Time: ${_formatDateTime(snapshot.data![index].date)}'),
+                  subtitle: Text(
+                      'Date and Time: ${_formatDateTime(snapshot.data![index].date)}'),
                 ),
               );
             },
@@ -90,18 +100,21 @@ class _AppointmentList extends StatelessWidget {
     return DateFormat('EEE, MMM d, y h:mm a').format(dateTime);
   }
 
-  void _navigateToAppointmentDetails(BuildContext context, Appointment appointment) {
+  void _navigateToAppointmentDetails(
+      BuildContext context, Appointment appointment) {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => AppointmentDetailsScreen(appointment: appointment),
+        builder: (context) =>
+            AppointmentDetailsScreen(appointment: appointment),
       ),
     );
   }
 
   Future<List<Appointment>> _getAppointments(String status) async {
     try {
-      List<Appointment> appointments = await DatabaseRepository().getAppointmentsByStatus(status);
+      List<Appointment> appointments =
+          await DatabaseRepository().getAppointmentsByStatus(status);
       return appointments;
     } catch (error) {
       print('Error fetching appointments: $error');
@@ -109,4 +122,3 @@ class _AppointmentList extends StatelessWidget {
     }
   }
 }
-
